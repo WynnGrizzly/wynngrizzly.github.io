@@ -1,0 +1,76 @@
+debris = game:GetService("Debris")
+
+function thread(func) Spawn(func, 0) end
+
+function rot()
+	return CFrame.Angles(math.random()*2*math.pi,math.random()*2*math.pi,math.random()*2*math.pi)
+end
+
+function particle(brick)
+	if not brick then return end
+	local ct = 0
+	for k, v in pairs(workspace:GetChildren()) do
+		if v.Name == "Particle" then ct = ct + 1 end
+	end
+	if ct > 25 then return end
+	local p = Instance.new("Part")
+	p.Name = "BloodParticle"
+	p.TopSurface = 0
+	p.BottomSurface = 0
+	p.FormFactor = "Custom"
+	p.Size = Vector3.new(1, 1, 1)
+	p.BrickColor = BrickColor.new("New yeller")
+	p.Reflectance = .4
+	p.CanCollide = false
+	p.Locked = true
+	p.Anchored = false
+	local m = Instance.new("BlockMesh", p)
+	m.Scale = Vector3.new(.4, .01, .4)
+	local f = Instance.new("BodyForce", p)
+	f.force = Vector3.new(0, p:GetMass() * 180, 0)
+	p.CFrame = brick.CFrame * CFrame.new(math.random()-.5,math.random()-.5,math.random()-.5) * rot()
+	p.RotVelocity = Vector3.new(math.random(-20,20),math.random(-20,20),math.random(-20,20))
+	p.Velocity = Vector3.new(math.random(-5,5),math.random(1,10),math.random(-5,5))
+	p.Parent = workspace
+	debris:AddItem(p, 4)
+	thread(function ()
+		while p.Transparency < 1 do
+			p.Transparency = p.Transparency + .01
+			wait()
+		end p:Destroy()
+	end)
+end
+
+function foundHumanoid(v)
+	local h = v.Health
+	v.Changed:connect(function (p)
+		local delta = h - v.Health
+		if p == "Health" and v.Health + (v.MaxHealth * .08) < h then
+			for i = 1, (math.min(4, math.ceil(math.abs(delta) / 3))) do
+				particle(v.Torso)
+			end
+		end
+		if delta > 0 then
+			local gui = script.HurtGui:clone()
+			gui.Parent = v.Parent:FindFirstChild("Head")
+			gui.Adornee = gui.Parent
+			gui.Script.Disabled = false
+			gui.TextButton.Text = "-" .. math.floor(delta + .5)
+		end
+		h = v.Health
+	end)
+end
+
+function search(m)
+	for k, v in pairs(m:GetChildren(m)) do
+		if v:IsA("Humanoid") then foundHumanoid(v) end
+		search(v)
+	end
+end
+
+search(workspace)
+game.Workspace.DescendantAdded:connect(function (v)
+	if v:IsA("Humanoid") then
+		foundHumanoid(v)
+	end
+end)

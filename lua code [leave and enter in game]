@@ -1,0 +1,22 @@
+game.Players.PlayerRemoving:Connect(function(plr)
+	if plr.Sans.Value == true then
+		game.Workspace.Timer.Value = 1
+		game.Workspace.Timer.Value = 30
+		game.Workspace.Round.Value = false
+		game.Lighting.FogStart = 0
+		game.Lighting.FogEnd = 100000
+		workspace.Winner.Value=tostring(game.Teams.Chara)
+	elseif plr.Chara.Value == true then
+		game.Workspace.Charas.Value = game.Workspace.Charas.Value - 1
+		if game.Workspace.Charas.Value <= 0 then
+			wait(2)
+			if workspace.Charas.Value<=0 then
+				game.Workspace.Megalovania.SoundId = "rbxassetid://4105371587"
+				game.Lighting.FogStart = 0
+				game.Lighting.FogEnd = 100000
+				game.Workspace.Timer.Value = 30
+				workspace.Winner.Value=tostring(game.Teams.Sans)
+			end
+		end
+	end
+end)

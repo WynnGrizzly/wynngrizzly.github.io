@@ -1,0 +1,32 @@
+let fruits = ["apple", "orange", "banana"];
+
+fruits[3] = "cocounit";
+
+document.write(fruits[0]);
+document.write(fruits[1]);
+document.write(fruits[2]);
+document.write(fruits[3]);
+
+-------------------------------------------------------
+
+
+ function insertDashesBetweenEvens(number) {
+    const numStr = number.toString();
+    let result = '';
+
+    for (let i = 0; i < numStr.length; i++) {
+        result += numStr[i];
+        if (i < numStr.length - 1) {
+            if (numStr[i] % 2 === 0 && numStr[i + 1] % 2 === 0) {
+                result += '-';
+            }
+        }
+    }
+
+    return result;
+}
+
+
+const inputNumber = 2468;
+document.write(insertDashesBetweenEvens(inputNumber));
+---------------------------------------------------------------
